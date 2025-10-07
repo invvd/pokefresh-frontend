@@ -109,7 +109,7 @@ function generarVentasEjemplo() {
     // Determinar estado basado en la fecha (pedidos más recientes tienden a estar pendientes)
     let estado;
     const diasDiferencia = Math.floor((hoy - fechaVenta) / (1000 * 60 * 60 * 24));
-    
+
     if (diasDiferencia === 0) {
       estado = ['pendiente', 'procesando'][Math.floor(Math.random() * 2)];
     } else if (diasDiferencia <= 2) {
@@ -430,13 +430,13 @@ function actualizarContadoresEstado(ventas) {
 // Filtrar pedidos por estado
 function filtrarPorEstado(estado) {
   filtroEstadoActual = estado;
-  
+
   // Actualizar botones de filtro
   document.querySelectorAll('.status-filter').forEach(btn => {
     btn.classList.remove('active');
   });
   document.querySelector(`[data-status="${estado}"]`).classList.add('active');
-  
+
   // Mostrar pedidos filtrados
   const ventas = obtenerVentasGuardadas();
   mostrarPedidos(ventas);
@@ -446,24 +446,24 @@ function filtrarPorEstado(estado) {
 function mostrarPedidos(ventas) {
   const container = document.getElementById('orders-grid');
   const noOrders = document.getElementById('no-orders');
-  
+
   // Filtrar por estado si es necesario
   let ventasFiltradas = ventas;
   if (filtroEstadoActual !== 'all') {
     ventasFiltradas = ventas.filter(venta => venta.estado === filtroEstadoActual);
   }
-  
+
   // Aplicar filtros de fecha también
   ventasFiltradas = filtrarVentasPorFecha(ventasFiltradas);
-  
+
   if (ventasFiltradas.length === 0) {
     container.innerHTML = '';
     noOrders.style.display = 'block';
     return;
   }
-  
+
   noOrders.style.display = 'none';
-  
+
   container.innerHTML = ventasFiltradas.map(venta => {
     const fecha = new Date(venta.fecha);
     const fechaFormateada = fecha.toLocaleDateString('es-CL', {
@@ -473,7 +473,7 @@ function mostrarPedidos(ventas) {
       hour: '2-digit',
       minute: '2-digit'
     });
-    
+
     const productosHTML = venta.productos.map(producto => `
       <div class="product-item">
         <span class="product-name">${producto.nombre}</span>
@@ -481,15 +481,15 @@ function mostrarPedidos(ventas) {
         <span class="product-price">$${(producto.precio * producto.cantidad).toLocaleString('es-CL')} CLP</span>
       </div>
     `).join('');
-    
+
     const estadoTexto = {
       'pendiente': '⏳ Pendiente',
       'procesando': '🔄 Procesando',
       'completado': '✅ Completado'
     }[venta.estado] || venta.estado;
-    
+
     const acciones = generarAccionesPedido(venta);
-    
+
     return `
       <div class="order-card ${venta.estado}">
         <div class="order-header">
@@ -521,23 +521,23 @@ function mostrarPedidos(ventas) {
 // Generar botones de acción según el estado del pedido
 function generarAccionesPedido(venta) {
   const acciones = [];
-  
+
   switch (venta.estado) {
     case 'pendiente':
       acciones.push(`<button class="action-btn btn-process" onclick="cambiarEstadoPedido('${venta.id}', 'procesando')">🔄 Procesar</button>`);
       acciones.push(`<button class="action-btn btn-cancel" onclick="cambiarEstadoPedido('${venta.id}', 'cancelado')">❌ Cancelar</button>`);
       break;
-      
+
     case 'procesando':
       acciones.push(`<button class="action-btn btn-complete" onclick="cambiarEstadoPedido('${venta.id}', 'completado')">✅ Completar</button>`);
       acciones.push(`<button class="action-btn btn-cancel" onclick="cambiarEstadoPedido('${venta.id}', 'cancelado')">❌ Cancelar</button>`);
       break;
-      
+
     case 'completado':
       acciones.push(`<button class="action-btn btn-details" onclick="verDetallesPedido('${venta.id}')">👁️ Ver Detalles</button>`);
       break;
   }
-  
+
   return acciones.join('');
 }
 
@@ -548,42 +548,42 @@ function cambiarEstadoPedido(pedidoId, nuevoEstado) {
     'completado': '¿Confirmas que este pedido ha sido completado y entregado?',
     'cancelado': '¿Estás seguro de que quieres CANCELAR este pedido? Esta acción no se puede deshacer.'
   };
-  
+
   if (!confirm(mensaje[nuevoEstado])) {
     return;
   }
-  
+
   // Obtener ventas
   let ventas = obtenerVentasGuardadas();
-  
+
   // Buscar y actualizar el pedido
   const indice = ventas.findIndex(venta => venta.id === pedidoId);
   if (indice !== -1) {
     ventas[indice].estado = nuevoEstado;
-    
+
     // Si se cancela, agregar timestamp de cancelación
     if (nuevoEstado === 'cancelado') {
       ventas[indice].fechaCancelacion = new Date().toISOString();
     }
-    
+
     // Si se completa, agregar timestamp de completado
     if (nuevoEstado === 'completado') {
       ventas[indice].fechaCompletado = new Date().toISOString();
     }
-    
+
     // Guardar cambios
     localStorage.setItem('pokefresh_ventas', JSON.stringify(ventas));
-    
+
     // Recargar datos
     cargarDatos();
-    
+
     // Mostrar notificación
     const notificaciones = {
       'procesando': '🔄 Pedido marcado como "En Proceso"',
       'completado': '✅ Pedido completado exitosamente',
       'cancelado': '❌ Pedido cancelado'
     };
-    
+
     mostrarNotificacionDashboard(notificaciones[nuevoEstado], nuevoEstado === 'cancelado' ? 'error' : 'success');
   }
 }
@@ -592,19 +592,19 @@ function cambiarEstadoPedido(pedidoId, nuevoEstado) {
 function verDetallesPedido(pedidoId) {
   const ventas = obtenerVentasGuardadas();
   const pedido = ventas.find(venta => venta.id === pedidoId);
-  
+
   if (!pedido) {
     alert('Pedido no encontrado');
     return;
   }
-  
+
   const fecha = new Date(pedido.fecha);
   const fechaCompletado = pedido.fechaCompletado ? new Date(pedido.fechaCompletado) : null;
-  
-  const productosDetalle = pedido.productos.map(producto => 
+
+  const productosDetalle = pedido.productos.map(producto =>
     `• ${producto.cantidad}x ${producto.nombre} - $${(producto.precio * producto.cantidad).toLocaleString('es-CL')} CLP`
   ).join('\n');
-  
+
   const detalle = `
 🍜 DETALLES DEL PEDIDO ${pedido.id}
 =====================================
@@ -619,7 +619,7 @@ ${productosDetalle}
 💰 Total: $${pedido.total.toLocaleString('es-CL')} CLP
 📦 Cantidad total de items: ${pedido.totalCantidad}
   `.trim();
-  
+
   // Mostrar en nueva ventana
   const ventanaDetalle = window.open('', '_blank');
   ventanaDetalle.document.write(`
@@ -649,7 +649,7 @@ function mostrarNotificacionDashboard(mensaje, tipo = 'info') {
     <span>${mensaje}</span>
     <button onclick="this.parentElement.remove()">✕</button>
   `;
-  
+
   // Agregar estilos si no existen
   if (!document.querySelector('#dashboard-notification-styles')) {
     const styles = document.createElement('style');
@@ -699,10 +699,10 @@ function mostrarNotificacionDashboard(mensaje, tipo = 'info') {
     `;
     document.head.appendChild(styles);
   }
-  
+
   // Agregar al DOM
   document.body.appendChild(notificacion);
-  
+
   // Auto-remover después de 5 segundos
   setTimeout(() => {
     if (notificacion.parentNode) {

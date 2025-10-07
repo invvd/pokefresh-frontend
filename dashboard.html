@@ -71,26 +71,42 @@
         <div class="section-header">
           <h2>⏳ Gestión de Pedidos</h2>
           <div class="status-filters">
-            <button class="status-filter active" data-status="all" onclick="filtrarPorEstado('all')">
+            <button
+              class="status-filter active"
+              data-status="all"
+              onclick="filtrarPorEstado('all')"
+            >
               📊 Todos <span class="count" id="count-all">0</span>
             </button>
-            <button class="status-filter" data-status="pendiente" onclick="filtrarPorEstado('pendiente')">
+            <button
+              class="status-filter"
+              data-status="pendiente"
+              onclick="filtrarPorEstado('pendiente')"
+            >
               ⏳ Pendientes <span class="count" id="count-pendiente">0</span>
             </button>
-            <button class="status-filter" data-status="procesando" onclick="filtrarPorEstado('procesando')">
+            <button
+              class="status-filter"
+              data-status="procesando"
+              onclick="filtrarPorEstado('procesando')"
+            >
               🔄 Procesando <span class="count" id="count-procesando">0</span>
             </button>
-            <button class="status-filter" data-status="completado" onclick="filtrarPorEstado('completado')">
+            <button
+              class="status-filter"
+              data-status="completado"
+              onclick="filtrarPorEstado('completado')"
+            >
               ✅ Completados <span class="count" id="count-completado">0</span>
             </button>
           </div>
         </div>
-        
+
         <div class="orders-grid" id="orders-grid">
           <!-- Se llena dinámicamente -->
         </div>
-        
-        <div class="no-orders" id="no-orders" style="display: none;">
+
+        <div class="no-orders" id="no-orders" style="display: none">
           <p>📦 No hay pedidos que coincidan con el filtro seleccionado</p>
         </div>
       </section>
