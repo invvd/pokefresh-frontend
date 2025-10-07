@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar Sesión - PokéFresh Admin</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="login.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-card">
+        <div class="login-header">
+          <h1>🍜 PokéFresh</h1>
+          <h2>Portal Administrativo</h2>
+          <p>Inicia sesión para acceder al panel de ventas</p>
+        </div>
+
+        <form class="login-form" id="loginForm">
+          <div class="input-group">
+            <label for="username">👤 Usuario</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              required
+              placeholder="Ingresa tu usuario"
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="password">🔒 Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              placeholder="Ingresa tu contraseña"
+            />
+          </div>
+
+          <button type="submit" class="login-btn">🚀 Iniciar Sesión</button>
+
+          <div class="login-demo">
+            <p>👨‍💼 <strong>Credenciales de prueba:</strong></p>
+            <p>Usuario: <code>admin</code></p>
+            <p>Contraseña: <code>pokefresh2025</code></p>
+          </div>
+        </form>
+
+        <div class="login-footer">
+          <a href="index.html" class="back-link">← Volver a la tienda</a>
+        </div>
+      </div>
+    </div>
+
+    <script src="login.js"></script>
+  </body>
+</html>

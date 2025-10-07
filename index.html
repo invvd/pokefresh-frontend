@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PokéFresh - Bowls Hawaianos Inspirados en Pokémon</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <nav class="navbar">
+        <div class="nav-container">
+          <div class="logo">
+            <h1>🏝️ PokéFresh</h1>
+            <span>Bowls Hawaianos</span>
+          </div>
+          <ul class="nav-menu">
+            <li><a href="#home">Inicio</a></li>
+            <li><a href="#productos">Productos</a></li>
+            <li><a href="#sobre-nosotros">Nosotros</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+            <li><a href="login.html" class="admin-link">👨‍💼 Admin</a></li>
+          </ul>
+          <div class="cart-icon" onclick="toggleCarrito()">
+            🛒 <span class="cart-count">0</span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Modal del Carrito -->
+    <div class="carrito-modal" id="carrito-modal">
+      <div class="carrito-overlay" onclick="cerrarCarrito()"></div>
+      <div class="carrito-contenido">
+        <div class="carrito-header">
+          <h3>🛒 Tu Carrito PokéFresh</h3>
+          <button class="cerrar-carrito" onclick="cerrarCarrito()">✕</button>
+        </div>
+        <div class="carrito-items" id="carrito-items">
+          <!-- Los items se generarán dinámicamente -->
+        </div>
+        <div class="carrito-total">
+          <div class="total-info">
+            <span class="total-label">Total:</span>
+            <span class="total-precio" id="total-precio">€0.00</span>
+          </div>
+          <button class="checkout-btn" onclick="procesarPedido()">
+            🎉 Realizar Pedido
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-content">
+        <h1>¡Descubre los Sabores de Alola!</h1>
+        <p>Bowls hawaianos frescos inspirados en el mundo Pokémon</p>
+        <button class="cta-button" onclick="scrollToProducts()">
+          Ver Productos
+        </button>
+      </div>
+      <div class="hero-image">
+        <div class="pokeball-decoration"></div>
+      </div>
+    </section>
+
+    <!-- Productos Section -->
+    <section id="productos" class="productos-section">
+      <div class="container">
+        <h2>Nuestros Bowls Pokémon</h2>
+
+        <!-- Controles de filtros y contador -->
+        <div class="filtros-controles">
+          <button class="toggle-filtros" onclick="toggleFiltros()">
+            <span class="filtros-icon">🔽</span>
+            <span class="filtros-text">Mostrar Filtros</span>
+          </button>
+          <div class="productos-contador">
+            <span class="contador-texto"
+              >Mostrando <strong id="productos-count">8</strong> de
+              <strong>8</strong> productos</span
+            >
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros-container" id="filtros-container">
+          <h3>Filtrar por:</h3>
+
+          <div class="filtro-grupo">
+            <h4>Base</h4>
+            <label
+              ><input type="checkbox" value="arroz" class="filtro-base" />
+              Arroz</label
+            >
+            <label
+              ><input type="checkbox" value="quinoa" class="filtro-base" />
+              Quinoa</label
+            >
+            <label
+              ><input type="checkbox" value="ensalada" class="filtro-base" />
+              Ensalada Verde</label
+            >
+          </div>
+
+          <div class="filtro-grupo">
+            <h4>Proteína</h4>
+            <label
+              ><input type="checkbox" value="salmon" class="filtro-proteina" />
+              Salmón</label
+            >
+            <label
+              ><input type="checkbox" value="atun" class="filtro-proteina" />
+              Atún</label
+            >
+            <label
+              ><input type="checkbox" value="pollo" class="filtro-proteina" />
+              Pollo Teriyaki</label
+            >
+            <label
+              ><input type="checkbox" value="tofu" class="filtro-proteina" />
+              Tofu</label
+            >
+          </div>
+
+          <div class="filtro-grupo">
+            <h4>Toppings</h4>
+            <label
+              ><input type="checkbox" value="aguacate" class="filtro-topping" />
+              Aguacate</label
+            >
+            <label
+              ><input type="checkbox" value="edamame" class="filtro-topping" />
+              Edamame</label
+            >
+            <label
+              ><input type="checkbox" value="mango" class="filtro-topping" />
+              Mango</label
+            >
+            <label
+              ><input type="checkbox" value="alga" class="filtro-topping" />
+              Alga Nori</label
+            >
+            <label
+              ><input type="checkbox" value="sesamo" class="filtro-topping" />
+              Semillas de Sésamo</label
+            >
+          </div>
+
+          <div class="filtro-grupo alergenos">
+            <h4>Excluir Alérgenos</h4>
+            <label
+              ><input type="checkbox" value="gluten" class="filtro-alergeno" />
+              Sin Gluten</label
+            >
+            <label
+              ><input type="checkbox" value="lacteos" class="filtro-alergeno" />
+              Sin Lácteos</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                value="frutos-secos"
+                class="filtro-alergeno"
+              />
+              Sin Frutos Secos</label
+            >
+            <label
+              ><input type="checkbox" value="soja" class="filtro-alergeno" />
+              Sin Soja</label
+            >
+          </div>
+
+          <button class="reset-filtros" onclick="resetFiltros()">
+            Limpiar Filtros
+          </button>
+        </div>
+
+        <!-- Productos Grid -->
+        <div class="productos-grid" id="productos-grid">
+          <!-- Productos se generarán dinámicamente -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Sobre Nosotros -->
+    <section id="sobre-nosotros" class="sobre-nosotros">
+      <div class="container">
+        <h2>Sobre PokéFresh</h2>
+        <div class="sobre-content">
+          <div class="sobre-text">
+            <p>
+              En PokéFresh, combinamos la frescura de los ingredientes hawaianos
+              con la magia del mundo Pokémon. Cada bowl está cuidadosamente
+              preparado con ingredientes frescos y saludables, inspirado en los
+              colores y sabores que encontrarías en las islas de Alola.
+            </p>
+            <p>
+              Nuestros chefs entrenan como verdaderos maestros Pokémon para
+              crear la experiencia culinaria perfecta.
+            </p>
+          </div>
+          <div class="sobre-stats">
+            <div class="stat">
+              <h3>150+</h3>
+              <p>Bowls Servidos</p>
+            </div>
+            <div class="stat">
+              <h3>100%</h3>
+              <p>Ingredientes Frescos</p>
+            </div>
+            <div class="stat">
+              <h3>5⭐</h3>
+              <p>Valoración Media</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto" class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>🏝️ PokéFresh</h3>
+            <p>Los mejores bowls hawaianos inspirados en Pokémon</p>
+          </div>
+          <div class="footer-section">
+            <h4>Contacto</h4>
+            <p>📍 Calle Pokémon 123, Ciudad Kanto</p>
+            <p>📞 +34 123 456 789</p>
+            <p>✉️ info@pokefresh.com</p>
+          </div>
+          <div class="footer-section">
+            <h4>Horarios</h4>
+            <p>Lun - Vie: 11:00 - 22:00</p>
+            <p>Sáb - Dom: 12:00 - 23:00</p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 PokéFresh. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

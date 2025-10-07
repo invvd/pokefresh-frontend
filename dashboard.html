@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - PokéFresh Admin</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
+    <!-- Header del Dashboard -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="header-left">
+          <h1>🍜 PokéFresh Admin</h1>
+          <span class="user-info">👤 <span id="username-display"></span></span>
+        </div>
+        <div class="header-right">
+          <button class="refresh-btn" onclick="cargarDatos()">
+            🔄 Actualizar
+          </button>
+          <button class="logout-btn" onclick="cerrarSesion()">
+            🚪 Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="dashboard-main">
+      <!-- Estadísticas Generales -->
+      <section class="stats-section">
+        <h2>📊 Resumen de Ventas</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-content">
+              <h3>Ventas Totales</h3>
+              <p class="stat-value" id="ventas-totales">$0 CLP</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-content">
+              <h3>Pedidos Realizados</h3>
+              <p class="stat-value" id="total-pedidos">0</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">🍜</div>
+            <div class="stat-content">
+              <h3>Bowls Vendidos</h3>
+              <p class="stat-value" id="total-bowls">0</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-content">
+              <h3>Ticket Promedio</h3>
+              <p class="stat-value" id="ticket-promedio">$0 CLP</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gestión de Pedidos Pendientes -->
+      <section class="orders-management-section">
+        <div class="section-header">
+          <h2>⏳ Gestión de Pedidos</h2>
+          <div class="status-filters">
+            <button class="status-filter active" data-status="all" onclick="filtrarPorEstado('all')">
+              📊 Todos <span class="count" id="count-all">0</span>
+            </button>
+            <button class="status-filter" data-status="pendiente" onclick="filtrarPorEstado('pendiente')">
+              ⏳ Pendientes <span class="count" id="count-pendiente">0</span>
+            </button>
+            <button class="status-filter" data-status="procesando" onclick="filtrarPorEstado('procesando')">
+              🔄 Procesando <span class="count" id="count-procesando">0</span>
+            </button>
+            <button class="status-filter" data-status="completado" onclick="filtrarPorEstado('completado')">
+              ✅ Completados <span class="count" id="count-completado">0</span>
+            </button>
+          </div>
+        </div>
+        
+        <div class="orders-grid" id="orders-grid">
+          <!-- Se llena dinámicamente -->
+        </div>
+        
+        <div class="no-orders" id="no-orders" style="display: none;">
+          <p>📦 No hay pedidos que coincidan con el filtro seleccionado</p>
+        </div>
+      </section>
+
+      <!-- Filtros y Controles -->
+      <section class="controls-section">
+        <div class="controls-row">
+          <div class="date-filters">
+            <label for="fecha-inicio">📅 Desde:</label>
+            <input type="date" id="fecha-inicio" onchange="filtrarPorFecha()" />
+
+            <label for="fecha-fin">📅 Hasta:</label>
+            <input type="date" id="fecha-fin" onchange="filtrarPorFecha()" />
+
+            <button onclick="limpiarFiltros()" class="clear-filters-btn">
+              🗑️ Limpiar
+            </button>
+          </div>
+
+          <div class="export-controls">
+            <button onclick="exportarCSV()" class="export-btn">
+              📊 Exportar CSV
+            </button>
+            <button onclick="generarReporte()" class="report-btn">
+              📋 Generar Reporte
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tabla de Ventas -->
+      <section class="sales-section">
+        <h2>🛒 Historial de Ventas</h2>
+        <div class="table-container">
+          <table class="sales-table" id="sales-table">
+            <thead>
+              <tr>
+                <th>📅 Fecha</th>
+                <th>🆔 ID Pedido</th>
+                <th>🍜 Productos</th>
+                <th>📦 Cantidad</th>
+                <th>💰 Total</th>
+                <th>📊 Estado</th>
+              </tr>
+            </thead>
+            <tbody id="sales-tbody">
+              <!-- Se llena dinámicamente -->
+            </tbody>
+          </table>
+
+          <div class="no-data" id="no-data" style="display: none">
+            <p>📋 No hay ventas registradas</p>
+            <p>
+              Visita la <a href="index.html">tienda</a> y realiza algunas
+              compras para ver datos aquí
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Productos Más Vendidos -->
+      <section class="popular-products-section">
+        <h2>🔥 Productos Más Vendidos</h2>
+        <div class="popular-products-grid" id="popular-products">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </section>
+    </main>
+
+    <script src="dashboard.js"></script>
+  </body>
+</html>
