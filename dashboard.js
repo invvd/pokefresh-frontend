@@ -1,4 +1,6 @@
 // Dashboard para administración de ventas
+const API_BASE_URL = 'http://localhost:4000/api';
+
 document.addEventListener('DOMContentLoaded', function () {
   // Verificar autenticación
   verificarAutenticacion();
@@ -44,8 +46,8 @@ function cerrarSesion() {
 }
 
 // Cargar y mostrar datos de ventas
-function cargarDatos() {
-  const ventas = obtenerVentasGuardadas();
+async function cargarDatos() {
+  const ventas = await obtenerVentasGuardadas();
 
   actualizarEstadisticas(ventas);
   mostrarTablaVentas(ventas);
@@ -53,9 +55,31 @@ function cargarDatos() {
   mostrarGestionPedidos(ventas);
 }
 
-// Obtener ventas del localStorage (simulando base de datos)
-function obtenerVentasGuardadas() {
-  // Primero, vamos a generar algunas ventas de ejemplo si no existen
+// Obtener ventas del backend o localStorage como fallback
+async function obtenerVentasGuardadas() {
+  try {
+    const session = JSON.parse(localStorage.getItem('pokefresh_admin_session') || '{}');
+
+    if (session.token && !session.offline) {
+      // Intentar obtener desde el backend
+      const response = await fetch(`${API_BASE_URL}/orders`, {
+        headers: {
+          'Authorization': `Bearer ${session.token}`
+        }
+      });
+
+      if (response.ok) {
+        const orders = await response.json();
+        // Guardar también en localStorage como cache
+        localStorage.setItem('pokefresh_ventas', JSON.stringify(orders));
+        return orders;
+      }
+    }
+  } catch (error) {
+    console.error('Error obteniendo órdenes del backend:', error);
+  }
+
+  // Fallback: usar localStorage
   let ventas = JSON.parse(localStorage.getItem('pokefresh_ventas') || '[]');
 
   // Si no hay ventas, generar datos de ejemplo
@@ -542,7 +566,7 @@ function generarAccionesPedido(venta) {
 }
 
 // Cambiar estado de un pedido
-function cambiarEstadoPedido(pedidoId, nuevoEstado) {
+async function cambiarEstadoPedido(pedidoId, nuevoEstado) {
   const mensaje = {
     'procesando': '¿Confirmas que quieres marcar este pedido como "En Proceso"?',
     'completado': '¿Confirmas que este pedido ha sido completado y entregado?',
@@ -553,8 +577,44 @@ function cambiarEstadoPedido(pedidoId, nuevoEstado) {
     return;
   }
 
-  // Obtener ventas
-  let ventas = obtenerVentasGuardadas();
+  try {
+    const session = JSON.parse(localStorage.getItem('pokefresh_admin_session') || '{}');
+
+    if (session.token && !session.offline) {
+      // Intentar actualizar en el backend
+      const response = await fetch(`${API_BASE_URL}/orders/${pedidoId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.token}`
+        },
+        body: JSON.stringify({ status: nuevoEstado })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Estado actualizado en backend:', result);
+
+        // Recargar datos
+        cargarDatos();
+
+        // Mostrar notificación
+        const notificaciones = {
+          'procesando': '🔄 Pedido marcado como "En Proceso"',
+          'completado': '✅ Pedido completado exitosamente',
+          'cancelado': '❌ Pedido cancelado'
+        };
+
+        mostrarNotificacionDashboard(notificaciones[nuevoEstado], nuevoEstado === 'cancelado' ? 'error' : 'success');
+        return;
+      }
+    }
+  } catch (error) {
+    console.error('Error actualizando estado en backend:', error);
+  }
+
+  // Fallback: actualizar en localStorage
+  let ventas = JSON.parse(localStorage.getItem('pokefresh_ventas') || '[]');
 
   // Buscar y actualizar el pedido
   const indice = ventas.findIndex(venta => venta.id === pedidoId);
@@ -579,9 +639,9 @@ function cambiarEstadoPedido(pedidoId, nuevoEstado) {
 
     // Mostrar notificación
     const notificaciones = {
-      'procesando': '🔄 Pedido marcado como "En Proceso"',
-      'completado': '✅ Pedido completado exitosamente',
-      'cancelado': '❌ Pedido cancelado'
+      'procesando': '🔄 Pedido marcado como "En Proceso" (offline)',
+      'completado': '✅ Pedido completado exitosamente (offline)',
+      'cancelado': '❌ Pedido cancelado (offline)'
     };
 
     mostrarNotificacionDashboard(notificaciones[nuevoEstado], nuevoEstado === 'cancelado' ? 'error' : 'success');

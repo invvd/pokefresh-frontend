@@ -1,14 +1,10 @@
-// Sistema de autenticación simple (solo frontend)
+// Sistema de autenticación con backend
+const API_BASE_URL = 'http://localhost:4000/api';
+
 document.addEventListener('DOMContentLoaded', function () {
   const loginForm = document.getElementById('loginForm');
 
-  // Credenciales de prueba (en un sistema real, esto sería validado por el backend)
-  const VALID_CREDENTIALS = {
-    username: 'admin',
-    password: 'pokefresh2025'
-  };
-
-  loginForm.addEventListener('submit', function (e) {
+  loginForm.addEventListener('submit', async function (e) {
     e.preventDefault();
 
     const username = document.getElementById('username').value;
@@ -20,30 +16,62 @@ document.addEventListener('DOMContentLoaded', function () {
       existingMessage.remove();
     }
 
-    // Validar credenciales
-    if (username === VALID_CREDENTIALS.username && password === VALID_CREDENTIALS.password) {
-      // Éxito - guardar sesión
-      localStorage.setItem('pokefresh_admin_session', JSON.stringify({
-        username: username,
-        loginTime: new Date().toISOString(),
-        isAuthenticated: true
-      }));
+    try {
+      // Intentar login con el backend
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
 
-      // Mostrar mensaje de éxito
-      showMessage('✅ ¡Inicio de sesión exitoso! Redirigiendo...', 'success');
+      const data = await response.json();
 
-      // Redirigir al dashboard después de 1.5 segundos
-      setTimeout(() => {
-        window.location.href = 'dashboard.html';
-      }, 1500);
+      if (response.ok) {
+        // Éxito - guardar sesión
+        localStorage.setItem('pokefresh_admin_session', JSON.stringify({
+          username: data.username,
+          token: data.token,
+          loginTime: new Date().toISOString(),
+          isAuthenticated: true,
+          expires_in: data.expires_in
+        }));
 
-    } else {
-      // Error en credenciales
-      showMessage('❌ Credenciales incorrectas. Intenta nuevamente.', 'error');
+        // Mostrar mensaje de éxito
+        showMessage('✅ ¡Inicio de sesión exitoso! Redirigiendo...', 'success');
 
-      // Limpiar campos
-      document.getElementById('password').value = '';
-      document.getElementById('username').focus();
+        // Redirigir al dashboard después de 1.5 segundos
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1500);
+      } else {
+        // Error del servidor
+        showMessage(`❌ ${data.error || 'Error en el servidor'}`, 'error');
+        document.getElementById('password').value = '';
+        document.getElementById('username').focus();
+      }
+    } catch (error) {
+      console.error('Error de conexión:', error);
+
+      // Fallback: validación local como antes
+      if (username === 'admin' && password === 'pokefresh2025') {
+        localStorage.setItem('pokefresh_admin_session', JSON.stringify({
+          username: username,
+          loginTime: new Date().toISOString(),
+          isAuthenticated: true,
+          offline: true
+        }));
+
+        showMessage('✅ ¡Inicio de sesión exitoso! (modo offline)', 'success');
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1500);
+      } else {
+        showMessage('❌ Sin conexión al servidor. Credenciales incorrectas.', 'error');
+        document.getElementById('password').value = '';
+        document.getElementById('username').focus();
+      }
     }
   });
 

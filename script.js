@@ -1,102 +1,122 @@
-// Datos de productos
-const productos = [
-  {
-    id: 1,
-    nombre: "Bowl Pikachu Tropical",
-    descripcion: "Bowl energético con la frescura tropical que Pikachu ama",
-    precio: 12500,
-    imagen: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=300&fit=crop&crop=center",
-    base: "arroz",
-    proteina: "salmon",
-    toppings: ["aguacate", "mango", "edamame"],
-    alergenos: ["pescado"],
-    ingredientes: "Arroz, salmón fresco, aguacate, mango, edamame, salsa ponzu"
-  },
-  {
-    id: 2,
-    nombre: "Bowl Squirtle Oceánico",
-    descripcion: "Fresco como las olas del mar, perfecto para los amantes del agua",
-    precio: 11900,
-    imagen: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=300&fit=crop&crop=center",
-    base: "ensalada",
-    proteina: "atun",
-    toppings: ["alga", "aguacate", "sesamo"],
-    alergenos: ["pescado", "sesamo"],
-    ingredientes: "Mix de ensaladas, atún rojo, alga nori, aguacate, semillas de sésamo"
-  },
-  {
-    id: 3,
-    nombre: "Bowl Bulbasaur Garden",
-    descripcion: "100% vegetal como nuestro querido Pokémon planta",
-    precio: 10500,
-    imagen: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop&crop=center",
-    base: "quinoa",
-    proteina: "tofu",
-    toppings: ["aguacate", "edamame", "alga"],
-    alergenos: ["soja"],
-    ingredientes: "Quinoa, tofu marinado, aguacate, edamame, alga wakame, tahini"
-  },
-  {
-    id: 4,
-    nombre: "Bowl Charmander Fire",
-    descripcion: "Picante y ardiente como la cola de Charmander",
-    precio: 13200,
-    imagen: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=300&fit=crop&crop=center",
-    base: "arroz",
-    proteina: "pollo",
-    toppings: ["mango", "edamame", "sesamo"],
-    alergenos: ["sesamo", "soja"],
-    ingredientes: "Arroz, pollo teriyaki picante, mango, edamame, salsa sriracha, sésamo"
-  },
-  {
-    id: 5,
-    nombre: "Bowl Snorlax Comfort",
-    descripcion: "Abundante y satisfactorio como el apetito de Snorlax",
-    precio: 14800,
-    imagen: "https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400&h=300&fit=crop&crop=center",
-    base: "arroz",
-    proteina: "salmon",
-    toppings: ["aguacate", "mango", "edamame", "alga"],
-    alergenos: ["pescado"],
-    ingredientes: "Arroz integral, salmón teriyaki, aguacate, mango, edamame, alga nori"
-  },
-  {
-    id: 6,
-    nombre: "Bowl Jigglypuff Sweet",
-    descripcion: "Dulce y adorable como la melodía de Jigglypuff",
-    precio: 11300,
-    imagen: "https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=400&h=300&fit=crop&crop=center",
-    base: "quinoa",
-    proteina: "tofu",
-    toppings: ["mango", "aguacate", "sesamo"],
-    alergenos: ["soja", "sesamo"],
-    ingredientes: "Quinoa rosa, tofu dulce, mango, aguacate, salsa de coco, sésamo negro"
-  },
-  {
-    id: 7,
-    nombre: "Bowl Gyarados Storm",
-    descripción: "Intenso y poderoso como la furia de Gyarados",
-    precio: 15500,
-    imagen: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&h=300&fit=crop&crop=center",
-    base: "ensalada",
-    proteina: "atun",
-    toppings: ["alga", "edamame", "sesamo"],
-    alergenos: ["pescado", "sesamo"],
-    ingredientes: "Mix marino, atún especiado, alga kombu, edamame, wasabi, sésamo tostado"
-  },
-  {
-    id: 8,
-    nombre: "Bowl Eevee Evolution",
-    descripcion: "Versátil y adaptable como las evoluciones de Eevee",
-    precio: 12900,
-    imagen: "https://images.unsplash.com/photo-1544982503-9f984c14501a?w=400&h=300&fit=crop&crop=center",
-    base: "quinoa",
-    proteina: "pollo",
-    toppings: ["aguacate", "mango", "edamame"],
-    alergenos: ["soja"],
-    ingredientes: "Quinoa tricolor, pollo al vapor, aguacate, mango, edamame, vinagreta asiática"
+// Configuración de API
+const API_BASE_URL = 'http://localhost:4000/api';
+
+// Datos de productos (ahora se cargan desde el backend)
+let productos = [];
+
+// Cargar productos desde el backend
+async function cargarProductosDesdeAPI() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/products`);
+    if (!response.ok) {
+      throw new Error('Error cargando productos');
+    }
+    productos = await response.json();
+    renderizarProductos(productos);
+  } catch (error) {
+    console.error('Error:', error);
+    // Fallback: usar productos hardcodeados
+    productos = [
+      {
+        id: 1,
+        nombre: "Bowl Pikachu Tropical",
+        descripcion: "Bowl energético con la frescura tropical que Pikachu ama",
+        precio: 12500,
+        imagen: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=300&fit=crop&crop=center",
+        base: "arroz",
+        proteina: "salmon",
+        toppings: ["aguacate", "mango", "edamame"],
+        alergenos: ["pescado"],
+        ingredientes: "Arroz, salmón fresco, aguacate, mango, edamame, salsa ponzu"
+      },
+      {
+        id: 2,
+        nombre: "Bowl Squirtle Oceánico",
+        descripcion: "Fresco como las olas del mar, perfecto para los amantes del agua",
+        precio: 11900,
+        imagen: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=300&fit=crop&crop=center",
+        base: "ensalada",
+        proteina: "atun",
+        toppings: ["alga", "aguacate", "sesamo"],
+        alergenos: ["pescado", "sesamo"],
+        ingredientes: "Mix de ensaladas, atún rojo, alga nori, aguacate, semillas de sésamo"
+      },
+      {
+        id: 3,
+        nombre: "Bowl Bulbasaur Garden",
+        descripcion: "100% vegetal como nuestro querido Pokémon planta",
+        precio: 10500,
+        imagen: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop&crop=center",
+        base: "quinoa",
+        proteina: "tofu",
+        toppings: ["aguacate", "edamame", "alga"],
+        alergenos: ["soja"],
+        ingredientes: "Quinoa, tofu marinado, aguacate, edamame, alga wakame, tahini"
+      },
+      {
+        id: 4,
+        nombre: "Bowl Charmander Fire",
+        descripcion: "Picante y ardiente como la cola de Charmander",
+        precio: 13200,
+        imagen: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=300&fit=crop&crop=center",
+        base: "arroz",
+        proteina: "pollo",
+        toppings: ["mango", "edamame", "sesamo"],
+        alergenos: ["sesamo", "soja"],
+        ingredientes: "Arroz, pollo teriyaki picante, mango, edamame, salsa sriracha, sésamo"
+      },
+      {
+        id: 5,
+        nombre: "Bowl Snorlax Comfort",
+        descripcion: "Abundante y satisfactorio como el apetito de Snorlax",
+        precio: 14800,
+        imagen: "https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400&h=300&fit=crop&crop=center",
+        base: "arroz",
+        proteina: "salmon",
+        toppings: ["aguacate", "mango", "edamame", "alga"],
+        alergenos: ["pescado"],
+        ingredientes: "Arroz integral, salmón teriyaki, aguacate, mango, edamame, alga nori"
+      },
+      {
+        id: 6,
+        nombre: "Bowl Jigglypuff Sweet",
+        descripcion: "Dulce y adorable como la melodía de Jigglypuff",
+        precio: 11300,
+        imagen: "https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=400&h=300&fit=crop&crop=center",
+        base: "quinoa",
+        proteina: "tofu",
+        toppings: ["mango", "aguacate", "sesamo"],
+        alergenos: ["soja", "sesamo"],
+        ingredientes: "Quinoa rosa, tofu dulce, mango, aguacate, salsa de coco, sésamo negro"
+      },
+      {
+        id: 7,
+        nombre: "Bowl Gyarados Storm",
+        descripción: "Intenso y poderoso como la furia de Gyarados",
+        precio: 15500,
+        imagen: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&h=300&fit=crop&crop=center",
+        base: "ensalada",
+        proteina: "atun",
+        toppings: ["alga", "edamame", "sesamo"],
+        alergenos: ["pescado", "sesamo"],
+        ingredientes: "Mix marino, atún especiado, alga kombu, edamame, wasabi, sésamo tostado"
+      },
+      {
+        id: 8,
+        nombre: "Bowl Eevee Evolution",
+        descripcion: "Versátil y adaptable como las evoluciones de Eevee",
+        precio: 12900,
+        imagen: "https://images.unsplash.com/photo-1544982503-9f984c14501a?w=400&h=300&fit=crop&crop=center",
+        base: "quinoa",
+        proteina: "pollo",
+        toppings: ["aguacate", "mango", "edamame"],
+        alergenos: ["soja"],
+        ingredientes: "Quinoa tricolor, pollo al vapor, aguacate, mango, edamame, vinagreta asiática"
+      }
+    ];
+    renderizarProductos(productos);
   }
-];
+}
 
 // Variables globales
 let carritoItems = [];
@@ -120,9 +140,10 @@ class CarritoItem {
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function () {
-  renderizarProductos(productos);
+  // Cargar productos desde la API
+  cargarProductosDesdeAPI();
+
   configurarFiltros();
-  actualizarContadorProductos(productos.length);
 
   // Cargar carrito desde localStorage
   cargarCarrito();
@@ -492,21 +513,16 @@ function finalizarPedido() {
   mostrarNotificacion('¡Esperamos que disfrutes tu comida hawaiana! 🌺', 'success');
 }
 
-// Función para guardar la venta en localStorage
-function guardarVenta() {
+// Función para guardar la venta en el backend
+async function guardarVenta() {
   if (carritoItems.length === 0) return;
-
-  // Obtener ventas existentes
-  const ventasExistentes = JSON.parse(localStorage.getItem('pokefresh_ventas') || '[]');
 
   // Calcular totales
   const total = carritoItems.reduce((sum, item) => sum + item.subtotal, 0);
   const totalCantidad = carritoItems.reduce((sum, item) => sum + item.cantidad, 0);
 
-  // Crear nueva venta
-  const nuevaVenta = {
-    id: `PF${String(Date.now()).slice(-6)}`, // ID único basado en timestamp
-    fecha: new Date().toISOString(),
+  // Crear payload para el backend
+  const orderData = {
     productos: carritoItems.map(item => ({
       id: item.id,
       nombre: item.nombre,
@@ -514,18 +530,60 @@ function guardarVenta() {
       cantidad: item.cantidad
     })),
     totalCantidad: totalCantidad,
-    total: total,
-    estado: 'procesando'
+    total: total
   };
 
-  // Agregar al inicio del array (más reciente primero)
-  ventasExistentes.unshift(nuevaVenta);
+  try {
+    const response = await fetch(`${API_BASE_URL}/orders`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(orderData)
+    });
 
-  // Guardar en localStorage
-  localStorage.setItem('pokefresh_ventas', JSON.stringify(ventasExistentes));
-}
+    if (!response.ok) {
+      throw new Error('Error creando orden');
+    }
 
-// Función para guardar carrito en localStorage
+    const result = await response.json();
+    console.log('Orden creada:', result);
+
+    // También guardar en localStorage como fallback/cache
+    const ventasExistentes = JSON.parse(localStorage.getItem('pokefresh_ventas') || '[]');
+    const nuevaVenta = {
+      id: result.id,
+      fecha: result.fecha,
+      productos: result.productos,
+      totalCantidad: result.totalCantidad,
+      total: result.total,
+      estado: result.estado
+    };
+    ventasExistentes.unshift(nuevaVenta);
+    localStorage.setItem('pokefresh_ventas', JSON.stringify(ventasExistentes));
+
+  } catch (error) {
+    console.error('Error guardando venta en el backend:', error);
+
+    // Fallback: guardar solo en localStorage
+    const ventasExistentes = JSON.parse(localStorage.getItem('pokefresh_ventas') || '[]');
+    const nuevaVenta = {
+      id: `PF${String(Date.now()).slice(-6)}`,
+      fecha: new Date().toISOString(),
+      productos: carritoItems.map(item => ({
+        id: item.id,
+        nombre: item.nombre,
+        precio: item.precio,
+        cantidad: item.cantidad
+      })),
+      totalCantidad: totalCantidad,
+      total: total,
+      estado: 'procesando'
+    };
+    ventasExistentes.unshift(nuevaVenta);
+    localStorage.setItem('pokefresh_ventas', JSON.stringify(ventasExistentes));
+  }
+}// Función para guardar carrito en localStorage
 function guardarCarrito() {
   localStorage.setItem('pokefresh-carrito', JSON.stringify(carritoItems));
 }
